@@ -3,6 +3,8 @@ module Padrino
     module Faye
       class EventManager < BaseEventManager
         def initialize(channel, user, ws, event_context, &block)
+          @channel = channel
+          logger.info "initialize channel: #{channel} user: #{user}"
           ws.on :open do |event|
             self.on_open event #&method(:on_open)
           end
@@ -29,6 +31,13 @@ module Padrino
         #
         def self.write(message, ws)
           ws.send ::Oj.dump(message)
+        end
+
+        ##
+        # Send message on channel to user
+        #
+        def send_message(message)
+           Padrino::WebSockets::Faye::EventManager.send_message(@channel,@user,message)
         end
 
         protected
