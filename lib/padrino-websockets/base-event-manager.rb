@@ -124,9 +124,12 @@ module Padrino
       ##
       # Manage the WebSocket's connection being closed.
       #
-      def on_shutdown
+      def on_shutdown event
         logger.debug "Disconnecting user: #{@user} from channel: #{@channel}."
-        @@connections[@channel].delete(@user)
+        begin
+          @@connections[@channel].delete(@user)
+        rescue
+        end
       end
 
       class << self
@@ -150,6 +153,7 @@ module Padrino
         def broadcast_local(channel, message, except=[])
           logger.debug "Broadcasting message on channel: #{channel}. Message:"
           logger.debug message
+          logger.debug "Clients: #{@@connections[channel].keys.inspect}"
           if @@connections[channel].nil?
             logger.error "channel not configured: #{channel}"
             return nil
@@ -157,6 +161,7 @@ module Padrino
 
           @@connections[channel].each do |user, ws|
             next if except.include?(user)
+            logger.debug "Broadcast >>> USER >>> #{user} <<< message >>> #{message}"
             write message, ws
           end
         end
@@ -167,6 +172,9 @@ module Padrino
         #
         def send_message_local(channel, user, message)
           logger.debug "Sending message: #{message} to user: #{user} on channel: #{channel}. Message"
+          logger.debug "Clients: #{(chnl=@@connections[channel]).keys}"
+          
+          #binding.pry
           if @@connections[channel].nil?
             logger.error "channel not configured: #{channel}"
             return nil

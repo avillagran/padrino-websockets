@@ -37,7 +37,8 @@ module Padrino
         # Send message on channel to user
         #
         def send_message(message)
-           Padrino::WebSockets::Faye::EventManager.send_message(@channel,@user,message)
+          logger.debug "EventManager::send_message channel: #{@channel} user: #{@user}"
+          Padrino::WebSockets::Faye::EventManager.send_message(@channel,@user,message)
         end
 
         protected
