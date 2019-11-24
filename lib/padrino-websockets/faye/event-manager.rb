@@ -21,7 +21,7 @@ module Padrino
         ##
         # Manage the WebSocket's connection being closed.
         #
-        def on_shutdown(event)
+        def on_shutdown(event=nil)
           @pinger.cancel if @pinger
           super event
         end
