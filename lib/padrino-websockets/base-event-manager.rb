@@ -125,8 +125,8 @@ module Padrino
       # Manage the WebSocket's connection being closed.
       #
       def on_shutdown event
-        logger.debug "Disconnecting user: #{@user} from channel: #{@channel}."
         begin
+          logger.debug "Disconnecting user: #{@user} from channel: #{@channel}."
           @@connections[@channel].delete(@user)
         rescue
         end
